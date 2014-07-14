@@ -7,3 +7,5 @@ I'm going to continue to branch off of this project and add drawing hands and pe
 odds calculator but I wanted to start with making sure I could program first and then that I could
 program in a clean and readable way and be able to identify made hands first.  All feedback, criticism, flames, trolling,
 etc are more than welcome.  Thanks for reading!
+
+Just futzing around and seeing how github works.  DISREGARD THIS IMPORTANT MESSAGE
