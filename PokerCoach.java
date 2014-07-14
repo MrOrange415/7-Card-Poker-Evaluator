@@ -178,15 +178,15 @@ public class PokerCoach {
 	{
 		System.out.println("You have a Straight Flush.");
 	}
-	else if (Card.isQuadsTurn(hand))
+	else if (Card.isQuadsTurn(hand) || Card.isQuadsFlop(hand))
 	{
 		System.out.println("You have Four of a Kind.");
 	}
-	else if (Card.isFullHouseTurn(hand))
+	else if (Card.isFullHouseTurn(hand) || Card.isFullHouseFlop(hand))
 	{
 		System.out.println("You have a Full House.");
 	}
-	else if (Card.isFlushTurn(hand))
+	else if (Card.isFlushTurn(hand) || Card.isFlushFlop(hand))
 	{
 		System.out.println("You have a Flush.");
 	}
@@ -194,15 +194,15 @@ public class PokerCoach {
 	{
 		System.out.println("You have a Straight.");
 	}
-	else if (Card.isTripsTurn(hand))
+	else if (Card.isTripsTurn(hand) || Card.isTripsFlop(hand))
 	{
 		System.out.println("You have Three of a Kind.");
 	}
-	else if (Card.isTwoPairTurn(hand))
+	else if (Card.isTwoPairTurn(hand) || Card.isTwoPairFlop(hand))
 	{
 		System.out.println("You have Two Pair.");
 	}
-	else if (Card.isPairTurn(hand)){
+	else if (Card.isPairTurn(hand) || Card.isPairFlop(hand)){
 		System.out.println("You have One Pair.");
 	}
 	else 
@@ -253,15 +253,15 @@ public class PokerCoach {
 	{
 		System.out.println("You have a Straight Flush.");
 	}
-	else if (Card.isQuadsRiver(hand))
+	else if (Card.isQuadsRiver(hand) || Card.isQuadsTurn(hand) || Card.isQuadsFlop(hand))
 	{
 		System.out.println("You have Four of a Kind.");
 	}
-	else if (Card.isFullHouseRiver(hand))
+	else if (Card.isFullHouseRiver(hand) || Card.isFullHouseTurn(hand) || Card.isFullHouseFlop(hand))
 	{
 		System.out.println("You have a Full House.");
 	}
-	else if (Card.isFlushRiver(hand))
+	else if (Card.isFlushRiver(hand) || Card.isFlushTurn(hand) || Card.isFlushFlop(hand))
 	{
 		System.out.println("You have a Flush.");
 	}
@@ -269,21 +269,23 @@ public class PokerCoach {
 	{
 		System.out.println("You have a Straight.");
 	}
-	else if (Card.isTripsRiver(hand))
+	else if (Card.isTripsRiver(hand) || Card.isTripsTurn(hand) || Card.isTripsFlop(hand))
 	{
 		System.out.println("You have Three of a Kind.");
 	}
-	else if (Card.isTwoPairRiver(hand))
+	else if (Card.isTwoPairRiver(hand) || Card.isTwoPairTurn(hand) || Card.isTwoPairFlop(hand))
 	{
 		System.out.println("You have Two Pair.");
 	}
-	else if (Card.isPairRiver(hand)){
+	else if (Card.isPairRiver(hand) || Card.isPairTurn(hand) || Card.isPairFlop(hand)){
 		System.out.println("You have One Pair.");
 	}
 	else 
 	{
 		System.out.println("You have "+Card.isHighCardRiver(hand)+" high.");
 	}
+	for (int i = 0; i < hand.length; i++)
+		System.out.println(hand[i]);
 	System.out.println("See another hand?");
 	System.out.println("1.  Yes.");
 	System.out.println("2.  No.");
