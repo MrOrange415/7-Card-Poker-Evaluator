@@ -1,9 +1,15 @@
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Set;
+
+
 public class Card {
-	private String card;
-	private String suit;
-	private int cardRank, suitRank;
-	private final String[] cardRanks = {"Two","Three","Four","Five","Six","Seven","Eight","Nine","Ten","Jack","Queen","King","Ace"};
-	private final String[] suitRanks = {"Spades","Diamonds","Clubs","Hearts"};
+	protected String card;
+	protected String suit;
+	protected int cardRank, suitRank;
+	protected final String[] cardRanks = {"Two","Three","Four","Five","Six","Seven","Eight","Nine","Ten","Jack","Queen","King","Ace"};
+	protected final String[] suitRanks = {"Spades","Diamonds","Clubs","Hearts"};
 	
 	// constructor duhhhhhh
 
@@ -20,6 +26,10 @@ public class Card {
 			if (suitRanks[i].equalsIgnoreCase(this.suit))
 				suitRank = i;
 		}
+	}
+	public Card(Card copy){
+		this.card = copy.card;
+		this.suit = copy.suit;
 	}
 	// organize by grouping like suits together, only for flush checking
 	public static void sortBySuitFlop(Card[] suits){
@@ -95,10 +105,9 @@ public class Card {
 	}
 	// organize hand on turn by face value
 	public static void sortByCardTurn(Card[] cards){
-		int min_value = 0;
 		for (int h = 0; h < 6; h++)
 		{
-			min_value = h;
+			int min_value = h;
 			for (int i = h+1; i < 6; i++)
 			{
 				if (cards[i].cardRank() < cards[min_value].cardRank())
@@ -130,6 +139,520 @@ public class Card {
 	// checking face value
 	public int cardRank(){
 		return cardRank;
+	}// for checking for straight flushes
+	public static void sortBySuitAndCardTurn(Card[] cards){
+		sortBySuitTurn(cards);
+		if (cards[0].suitRank() == cards[5].suitRank())
+			sortByCardTurn(cards);
+		else if (cards[0].suitRank == cards[4].suitRank())
+			sortByCardFlop(cards);
+		else if (cards[0].suitRank == cards[3].suitRank() && cards[4].suitRank() == cards[5].suitRank())
+		{
+			for (int h = 0; h < 4; h++)
+			{
+				int minValue = h;
+				for (int i = 1; i < 4; i++)
+				{
+					if (cards[i].cardRank() < cards[minValue].cardRank())
+					{
+						Card swap = cards[minValue];
+						cards[minValue] = cards[i];
+						cards[i] = swap;
+					}
+				}
+			}
+			for (int h = 4; h < 6; h++)
+			{
+				int minValue = h;
+				for (int i = 5; i < 6; i++)
+				{
+					if (cards[i].cardRank() < cards[minValue].cardRank())
+					{
+						Card swap = cards[minValue];
+						cards[minValue] = cards[i];
+						cards[i] = swap;
+					}
+				}
+			}
+		}
+		else if (cards[0].suitRank == cards[3].suitRank())
+		{
+			for (int h = 0; h < 4; h++)
+			{
+				int minValue = h;
+				for (int i = 1; i < 4; i++)
+				{
+					if (cards[i].cardRank() < cards[minValue].cardRank())
+					{
+						Card swap = cards[minValue];
+						cards[minValue] = cards[i];
+						cards[i] = swap;
+					}
+				}
+			}
+		}
+		else if (cards[0].suitRank == cards[2].suitRank() && cards[3].suitRank == cards[5].suitRank())
+		{
+			for (int h = 0; h < 3; h++)
+			{
+				int minValue = h;
+				for (int i = 1; i < 3; i++)
+				{
+					if (cards[i].cardRank() < cards[minValue].cardRank())
+					{
+						Card swap = cards[minValue];
+						cards[minValue] = cards[i];
+						cards[i] = swap;
+					}
+				}
+			}
+			for (int h = 3; h < 6; h++)
+			{
+				int minValue = h;
+				for (int i = 4; i < 6; i++)
+				{
+					if (cards[i].cardRank() < cards[minValue].cardRank())
+					{
+						Card swap = cards[minValue];
+						cards[minValue] = cards[i];
+						cards[i] = swap;
+					}
+				}
+			}
+		}
+		else if (cards[0].suitRank == cards[2].suitRank() && cards[3].suitRank == cards[4].suitRank())
+		{
+			for (int h = 0; h < 3; h++)
+			{
+				int minValue = h;
+				for (int i = 1; i < 3; i++)
+				{
+					if (cards[i].cardRank() < cards[minValue].cardRank())
+					{
+						Card swap = cards[minValue];
+						cards[minValue] = cards[i];
+						cards[i] = swap;
+					}
+				}
+			}
+			for (int h = 3; h < 5; h++)
+			{
+				int minValue = h;
+				for (int i = 4; i < 5; i++)
+				{
+					if (cards[i].cardRank() < cards[minValue].cardRank())
+					{
+						Card swap = cards[minValue];
+						cards[minValue] = cards[i];
+						cards[i] = swap;
+					}
+				}
+			}
+		}
+		else if (cards[0].suitRank == cards[2].suitRank() && cards[4].suitRank == cards[5].suitRank())
+		{
+			for (int h = 0; h < 3; h++)
+			{
+				int minValue = h;
+				for (int i = 1; i < 3; i++)
+				{
+					if (cards[i].cardRank() < cards[minValue].cardRank())
+					{
+						Card swap = cards[minValue];
+						cards[minValue] = cards[i];
+						cards[i] = swap;
+					}
+				}
+			}
+			for (int h = 4; h < 6; h++)
+			{
+				int minValue = h;
+				for (int i = 5; i < 6; i++)
+				{
+					if (cards[i].cardRank() < cards[minValue].cardRank())
+					{
+						Card swap = cards[minValue];
+						cards[minValue] = cards[i];
+						cards[i] = swap;
+					}
+				}
+			}
+		}
+		else if (cards[0].suitRank == cards[2].suitRank())
+		{
+			for (int h = 0; h < 3; h++)
+			{
+				int minValue = h;
+				for (int i = 1; i < 3; i++)
+				{
+					if (cards[i].cardRank() < cards[minValue].cardRank())
+					{
+						Card swap = cards[minValue];
+						cards[minValue] = cards[i];
+						cards[i] = swap;
+					}
+				}
+			}
+		}
+		else if (cards[0].suitRank == cards[1].suitRank() && cards[3].suitRank == cards[5].suitRank())
+		{
+			for (int h = 0; h < 2; h++)
+			{
+				int minValue = h;
+				for (int i = 1; i < 2; i++)
+				{
+					if (cards[i].cardRank() < cards[minValue].cardRank())
+					{
+						Card swap = cards[minValue];
+						cards[minValue] = cards[i];
+						cards[i] = swap;
+					}
+				}
+			}
+			for (int h = 3; h < 6; h++)
+			{
+				int minValue = h;
+				for (int i = 4; i < 6; i++)
+				{
+					if (cards[i].cardRank() < cards[minValue].cardRank())
+					{
+						Card swap = cards[minValue];
+						cards[minValue] = cards[i];
+						cards[i] = swap;
+					}
+				}
+			}
+		}
+		else if (cards[1].suitRank == cards[2].suitRank() && cards[3].suitRank == cards[5].suitRank())
+		{
+			for (int h = 1; h < 3; h++)
+			{
+				int minValue = h;
+				for (int i = 2; i < 3; i++)
+				{
+					if (cards[i].cardRank() < cards[minValue].cardRank())
+					{
+						Card swap = cards[minValue];
+						cards[minValue] = cards[i];
+						cards[i] = swap;
+					}
+				}
+			}
+			for (int h = 3; h < 6; h++)
+			{
+				int minValue = h;
+				for (int i = 4; i < 6; i++)
+				{
+					if (cards[i].cardRank() < cards[minValue].cardRank())
+					{
+						Card swap = cards[minValue];
+						cards[minValue] = cards[i];
+						cards[i] = swap;
+					}
+				}
+			}
+		}
+		else if (cards[3].suitRank == cards[5].suitRank())
+		{
+			for (int h = 3; h < 6; h++)
+			{
+				int minValue = h;
+				for (int i = 4; i < 6; i++)
+				{
+					if (cards[i].cardRank() < cards[minValue].cardRank())
+					{
+						Card swap = cards[minValue];
+						cards[minValue] = cards[i];
+						cards[i] = swap;
+					}
+				}
+			}
+		}
+		else if (cards[0].suitRank == cards[1].suitRank() && cards[2].suitRank() == cards[5].suitRank())
+		{
+			for (int h = 0; h < 2; h++)
+			{
+				int minValue = h;
+				for (int i = 1; i < 2; i++)
+				{
+					if (cards[i].cardRank() < cards[minValue].cardRank())
+					{
+						Card swap = cards[minValue];
+						cards[minValue] = cards[i];
+						cards[i] = swap;
+					}
+				}
+			}
+			for (int h = 2; h < 6; h++)
+			{
+				int minValue = h;
+				for (int i = 3; i < 6; i++)
+				{
+					if (cards[i].cardRank() < cards[minValue].cardRank())
+					{
+						Card swap = cards[minValue];
+						cards[minValue] = cards[i];
+						cards[i] = swap;
+					}
+				}
+			}
+		}
+		else if (cards[2].suitRank() == cards[5].suitRank())
+		{
+			for (int h = 2; h < 6; h++)
+			{
+				int minValue = h;
+				for (int i = 3; i < 6; i++)
+				{
+					if (cards[i].cardRank() < cards[minValue].cardRank())
+					{
+						Card swap = cards[minValue];
+						cards[minValue] = cards[i];
+						cards[i] = swap;
+					}
+				}
+			}
+		}
+		else if (cards[1].suitRank() == cards[5].suitRank())
+		{
+			for (int h = 1; h < 6; h++)
+			{
+				int minValue = h;
+				for (int i = 2; i < 6; i++)
+				{
+					if (cards[i].cardRank() < cards[minValue].cardRank())
+					{
+						Card swap = cards[minValue];
+						cards[minValue] = cards[i];
+						cards[i] = swap;
+					}
+				}
+			}
+		}
+		else if (cards[1].suitRank() == cards[4].suitRank())
+		{
+			for (int h = 1; h < 5; h++)
+			{
+				int minValue = h;
+				for (int i = 2; i < 5; i++)
+				{
+					if (cards[i].cardRank() < cards[minValue].cardRank())
+					{
+						Card swap = cards[minValue];
+						cards[minValue] = cards[i];
+						cards[i] = swap;
+					}
+				}
+			}
+		}
+		else if (cards[1].suitRank == cards[3].suitRank() && cards[4].suitRank() == cards[5].suitRank())
+		{
+			for (int h = 1; h < 4; h++)
+			{
+				int minValue = h;
+				for (int i = 2; i < 4; i++)
+				{
+					if (cards[i].cardRank() < cards[minValue].cardRank())
+					{
+						Card swap = cards[minValue];
+						cards[minValue] = cards[i];
+						cards[i] = swap;
+					}
+				}
+			}
+			for (int h = 4; h < 6; h++)
+			{
+				int minValue = h;
+				for (int i = 5; i < 6; i++)
+				{
+					if (cards[i].cardRank() < cards[minValue].cardRank())
+					{
+						Card swap = cards[minValue];
+						cards[minValue] = cards[i];
+						cards[i] = swap;
+					}
+				}
+			}
+		}
+		else if (cards[1].suitRank == cards[3].suitRank())
+		{
+			for (int h = 1; h < 4; h++)
+			{
+				int minValue = h;
+				for (int i = 2; i < 4; i++)
+				{
+					if (cards[i].cardRank() < cards[minValue].cardRank())
+					{
+						Card swap = cards[minValue];
+						cards[minValue] = cards[i];
+						cards[i] = swap;
+					}
+				}
+			}
+		}
+		else if (cards[1].suitRank == cards[2].suitRank() && cards[3].suitRank() == cards[5].suitRank())
+		{
+			for (int h = 1; h < 3; h++)
+			{
+				int minValue = h;
+				for (int i = 2; i < 3; i++)
+				{
+					if (cards[i].cardRank() < cards[minValue].cardRank())
+					{
+						Card swap = cards[minValue];
+						cards[minValue] = cards[i];
+						cards[i] = swap;
+					}
+				}
+			}
+			for (int h = 3; h < 6; h++)
+			{
+				int minValue = h;
+				for (int i = 4; i < 6; i++)
+				{
+					if (cards[i].cardRank() < cards[minValue].cardRank())
+					{
+						Card swap = cards[minValue];
+						cards[minValue] = cards[i];
+						cards[i] = swap;
+					}
+				}
+			}
+		}
+		else if (cards[3].suitRank() == cards[5].suitRank())
+		{
+			for (int h = 3; h < 6; h++)
+			{
+				int minValue = h;
+				for (int i = 4; i < 6; i++)
+				{
+					if (cards[i].cardRank() < cards[minValue].cardRank())
+					{
+						Card swap = cards[minValue];
+						cards[minValue] = cards[i];
+						cards[i] = swap;
+					}
+				}
+			}
+		}
+		else if (cards[1].suitRank == cards[2].suitRank() && cards[3].suitRank == cards[4].suitRank())
+		{
+			for (int h = 1; h < 3; h++)
+			{
+				int minValue = h;
+				for (int i = 2; i < 3; i++)
+				{
+					if (cards[i].cardRank() < cards[minValue].cardRank())
+					{
+						Card swap = cards[minValue];
+						cards[minValue] = cards[i];
+						cards[i] = swap;
+					}
+				}
+			}
+			for (int h = 3; h < 5; h++)
+			{
+				int minValue = h;
+				for (int i = 4; i < 5; i++)
+				{
+					if (cards[i].cardRank() < cards[minValue].cardRank())
+					{
+						Card swap = cards[minValue];
+						cards[minValue] = cards[i];
+						cards[i] = swap;
+					}
+				}
+			}
+		}
+		else if (cards[1].suitRank == cards[2].suitRank())
+		{
+			for (int h = 1; h < 3; h++)
+			{
+				int minValue = h;
+				for (int i = 2; i < 3; i++)
+				{
+					if (cards[i].cardRank() < cards[minValue].cardRank())
+					{
+						Card swap = cards[minValue];
+						cards[minValue] = cards[i];
+						cards[i] = swap;
+					}
+				}
+			}
+		}
+		else if (cards[3].suitRank == cards[4].suitRank())
+		{
+			for (int h = 3; h < 5; h++)
+			{
+				int minValue = h;
+				for (int i = 4; i < 5; i++)
+				{
+					if (cards[i].cardRank() < cards[minValue].cardRank())
+					{
+						Card swap = cards[minValue];
+						cards[minValue] = cards[i];
+						cards[i] = swap;
+					}
+				}
+			}
+		}
+		else if (cards[2].suitRank == cards[3].suitRank())
+		{
+			for (int h = 2; h < 4; h++)
+			{
+				int minValue = h;
+				for (int i = 3; i < 4; i++)
+				{
+					if (cards[i].cardRank() < cards[minValue].cardRank())
+					{
+						Card swap = cards[minValue];
+						cards[minValue] = cards[i];
+						cards[i] = swap;
+					}
+				}
+			}
+		}
+	}
+	public static void sortBySuitAndCardRiver(Card[] cards){
+		sortBySuitRiver(cards);
+		if (cards[0].suitRank() == cards[6].suitRank())
+			sortByCardRiver(cards);
+		else if (cards[0].suitRank() == cards[5].suitRank())
+			sortByCardTurn(cards);
+		else if (cards[0].suitRank() == cards[4].suitRank())
+			sortByCardFlop(cards);
+		else if (cards[1].suitRank() == cards[5].suitRank())
+		{
+			for (int h = 1; h < 6; h++)
+			{
+				int min_value = h;
+				for (int i = h+1; i < 6; i++)
+				{
+					if (cards[i].cardRank() < cards[min_value].cardRank())
+					{
+						Card switchCard = cards[min_value];
+						cards[min_value] = cards[i];
+						cards[i] = switchCard;
+					}
+				}
+			}
+		}
+		else if (cards[2].suitRank() == cards[6].suitRank())
+		{
+			for (int h = 2; h < 7; h++)
+			{
+				int min_value = h;
+				for (int i = h+1; i < 7; i++)
+				{
+					if (cards[i].cardRank() < cards[min_value].cardRank())
+					{
+						Card switchCard = cards[min_value];
+						cards[min_value] = cards[i];
+						cards[i] = switchCard;
+					}
+				}
+			}
+		}
 	}
 	// check to see if we have a flush on the flop
 	public static boolean isFlushFlop(Card[] cards){
@@ -159,6 +682,7 @@ public class Card {
 	public static boolean isStraightFlop(Card[] cards){
 		boolean straight = false;
 		sortByCardFlop(cards);
+		// if there's an Ace, we need specific check for wheel (Ace through five) and broadway (10 through Ace) straights
 		if (cards[4].card.equalsIgnoreCase("Ace"))
 		{
 			if (cards[0].card.equals("Two") && cards[1].card.equals("Three") && cards[2].card.equals("Four") && cards[3].card.equals("Five"))
@@ -166,7 +690,7 @@ public class Card {
 			else if (cards[0].card.equals("Ten") && cards[1].card.equals("Jack") && cards[2].card.equals("Queen") && cards[3].card.equals("King"))
 				straight = true;
 		}
-		else
+		else // check for any other straights (five sequential cards)
 		{
 			int incrementCard = cards[0].cardRank()+1;
 			for (int i = 1; i < 5; i++)
@@ -179,128 +703,196 @@ public class Card {
 		}
 		return straight;
 	}
-	// check for straight on the turn
-	public static boolean isStraightTurn(Card[] cards){
-		boolean straight = false;
-		int counter = 1, wheel = 1, broadway = 1;
-		sortByCardTurn(cards);
-		if ((cards[5].cardRank() == 12))
-		{
-			for (int incrementCard = 0; incrementCard < 4; incrementCard++)
-			{
-				for (int i = 0; i < 5; i++)
+	// check for straight on the turn.  using a counter to count number of instances of cards within a straight range (five or more sequential cards)
+	// and a check for pairs or more to account for duplicates
+		public static boolean isStraightTurn(Card[] cards){
+			boolean straight = false;
+			int counterA = 1, counterB = 1, wheel = 2, broadway = 2;
+			sortByCardTurn(cards);
+			// if there's an ace, need a separate check for a wheel (Ace through five straight) or broadway (10 through Ace straight)
+			if ((cards[5].cardRank() == 12 && cards[0].cardRank() == 0) || (cards[5].cardRank() == 12 && cards[0].cardRank() == 8)
+					|| (cards[5].cardRank() == 12 && cards[1].cardRank() == 8))
+			{// check for wheel
+				for (int incrementCard = 1; incrementCard < 4; incrementCard++)
 				{
-					if (cards[i].cardRank() == incrementCard)
-						wheel++;
-				}
-			}
-			for (int incrementCard = 8; incrementCard < 12; incrementCard++)
-			{
-				for (int i = 0; i < 5; i++)
+					for (int i = 1; i < 5; i++)
+					{
+						if (cards[i].cardRank() == incrementCard)
+							wheel++;
+					}
+				}// check for broadway
+				for (int incrementCard = 9; incrementCard < 12; incrementCard++)
 				{
-					if (cards[i].cardRank() == incrementCard)
-						broadway++;
+					for (int i = 1; i < 5; i++)
+					{
+						if (cards[i].cardRank() == incrementCard)
+							broadway++;
+					}
 				}
+				// readjusting counter to account for multiple cards (pairs, trips)
+				if (isTripsTurn(cards) || isTripsFlop(cards))
+				{
+					wheel = wheel - 2;
+					broadway  = broadway - 2;
+				}
+				else if (isTwoPairTurn(cards) || isTwoPairTurn(cards))
+				{
+					wheel = wheel - 2;
+					broadway  = broadway - 2;
+				}
+				else if (isPairTurn(cards) || isPairFlop(cards))
+				{
+					wheel = wheel - 1;
+					broadway = broadway - 1;
+				}
+				if (wheel >= 5 || broadway >= 5)
+					straight = true;
 			}
-			// readjusting counter to account for multiple cards (pairs, trips)
-			if (isTripsTurn(cards) || isTripsFlop(cards))
-			{
-				wheel = wheel - 2;
-				broadway  = broadway - 2;
+			else // check for any other straight
+			{// checking for a straight from the first element of the array
+				for (int incrementCard = cards[0].cardRank()+1; incrementCard < cards[0].cardRank()+5; incrementCard++)
+				{
+					for (int i = 1; i < 6; i++)
+					{
+						if (cards[i].cardRank() == incrementCard)
+							counterA++;
+					}
+				}// checking for a straight in the second five elements of the array
+				for (int incrementCard = cards[1].cardRank()+1; incrementCard < cards[0].cardRank()+5; incrementCard++)
+				{
+					for (int i = 2; i < 6; i++)
+					{
+						if (cards[i].cardRank() == incrementCard)
+							counterB++;
+					}
+				}// adjusting the straight counter to remove any duplicates (pairs or more)
+				if (isTripsTurn(cards) || isTripsFlop(cards))
+				{
+					counterA = counterA - 2;
+					counterB = counterB - 2;
+				}
+				else if (isTwoPairTurn(cards) || isTwoPairTurn(cards))
+				{
+					counterA = counterA - 2;
+					counterB = counterB - 2;
+				}
+				else if (isPairTurn(cards) || isPairFlop(cards))
+				{
+					counterA = counterA - 1;
+					counterB = counterB - 1;
+				}
+				if (counterB >= 5 || counterA >= 5)
+					straight = true;
 			}
-			else if (isPairTurn(cards) || isPairFlop(cards))
-			{
-				wheel = wheel - 1;
-				broadway = broadway - 1;
-			}
-			if (wheel >= 5 || broadway >= 5)
-				straight = true;
+			return straight;
 		}
-		else
-		{
-			for (int incrementCard = cards[0].cardRank()+1; incrementCard < 6; incrementCard++)
+		// check for straight on the river.  using a counter to count number of instances of cards within a straight range (five or more sequential cards)
+		// and a check for pairs or more to account for duplicates
+		public static boolean isStraightRiver(Card[] cards){
+			boolean straight = false;
+			int counterA = 1, counterB = 1, counterC = 1, wheel = 2, broadway = 2;
+			sortByCardRiver(cards);
+			// using a counter to count number of cards in a wheel or broadway straight range
+			if ((cards[6].cardRank() == 12 && cards[0].cardRank() == 0) || (cards[6].cardRank() == 12 && cards[0].cardRank() == 8) ||
+					(cards[6].cardRank() == 12 && cards[1].cardRank() == 8) || (cards[6].cardRank() == 12 && cards[2].cardRank() == 8))
 			{
-				for (int i = 1; i < 6; i++)
+				for (int incrementCard = 0; incrementCard < 4; incrementCard++)
 				{
-					if (cards[i].cardRank() == incrementCard)
-						counter++;
+					for (int i = 0; i < 6; i++)
+					{
+						if (cards[i].cardRank() == incrementCard)
+							wheel++;
+					}
 				}
+				for (int incrementCard = 8; incrementCard < 12; incrementCard++)
+				{
+					for (int i = 0; i < 6; i++)
+					{
+						if (cards[i].cardRank() == incrementCard)
+							broadway++;
+					}
+				} 
+				// readjusting counter to account for multiple cards (pairs, trips)
+				if (isTripsRiver(cards) || isTripsTurn(cards) || isTripsFlop(cards))
+				{
+					wheel = wheel - 2;
+					broadway = broadway - 2;
+				}
+				else if (isTwoPairRiver(cards) || isTwoPairTurn(cards) || isTwoPairFlop(cards))
+				{
+					wheel = wheel - 2;
+					broadway  = broadway - 2;
+				}
+				else if (isPairRiver(cards) || isPairTurn(cards) || isPairFlop(cards))
+				{
+					wheel = wheel - 1;
+					broadway = broadway - 1;
+				}
+				if (wheel >= 5 || broadway >= 5)
+					straight = true;
 			}
-			if (isTripsTurn(cards) || isTripsFlop(cards))
-			{
-				counter = counter - 2;
+			else
+			{// checking for a straight starting from first element
+				for (int incrementCard = cards[0].cardRank()+1; incrementCard < cards[0].cardRank()+5; incrementCard++)
+				{
+					for (int i = 1; i < 7; i++)
+					{
+						if (cards[i].cardRank() == incrementCard)
+							counterA++;
+					}
+				}// checking for straight starting from second element
+				for (int incrementCard = cards[1].cardRank()+1; incrementCard < cards[1].cardRank()+5; incrementCard++)
+				{
+					for (int i = 2; i < 7; i++)
+					{
+						if (cards[i].cardRank() == incrementCard)
+							counterB++;
+					}
+				}// checking for straight in last five cards
+				for (int incrementCard = cards[2].cardRank()+1; incrementCard < cards[2].cardRank()+5; incrementCard++)
+				{
+					for (int i = 3; i < 7; i++)
+					{
+						if (cards[i].cardRank() == incrementCard)
+							counterC++;
+					}
+				}
+				// readjusting counter to account for multiple cards (pairs, trips)
+				if (isTripsRiver(cards) || isTripsTurn(cards) || isTripsFlop(cards))
+				{
+					counterA = counterA - 2;
+					counterB = counterB - 2;
+					counterC = counterC - 2;
+				}
+				else if (isTwoPairRiver(cards) || isTwoPairTurn(cards) || isTwoPairFlop(cards))
+				{
+					counterA = counterA - 2;
+					counterB = counterB - 2;
+					counterC = counterC - 2;
+				} // accounts for duplicate cards that are unrelated to our sequential cards
+				else if ((cards[0].cardRank() == cards[1].cardRank()) && cards[1].cardRank()+1 != cards[2].cardRank())
+				{
+					counterA = counterA - 0;
+					counterB = counterB - 0;
+					counterC = counterC - 0;
+				}
+				else if ((cards[6].cardRank() == cards[5].cardRank()) && cards[5].cardRank()-1 != cards[4].cardRank())
+				{
+					counterA = counterA - 0;
+					counterB = counterB - 0;
+					counterC = counterC - 0;
+				}
+				else if (isPairRiver(cards) || isPairTurn(cards) || isPairRiver(cards))
+				{
+					counterA = counterA - 1;
+					counterB = counterB - 1;
+					counterC = counterC - 1;
+				}
+				if (counterC >= 5 || counterB >= 5 || counterA >= 5 )
+					straight = true;
 			}
-			else if (isPairTurn(cards) || isPairFlop(cards))
-			{
-				counter = counter - 1;
-			}
-			if (counter >= 5)
-				straight = true;
+			return straight;
 		}
-		return straight;
-	}
-	// check for straight on the river
-	public static boolean isStraightRiver(Card[] cards){
-		boolean straight = false;
-		int counter = 1, wheel = 1, broadway = 1;
-		sortByCardRiver(cards);
-		// using a counter to count number of cards in a wheel or broadway straight range
-		if (cards[6].cardRank() == 12)
-		{
-			for (int incrementCard = 0; incrementCard < 4; incrementCard++)
-			{
-				for (int i = 0; i < 6; i++)
-				{
-					if (cards[i].cardRank() == incrementCard)
-						wheel++;
-				}
-			}
-			for (int incrementCard = 8; incrementCard < 12; incrementCard++)
-			{
-				for (int i = 0; i < 6; i++)
-				{
-					if (cards[i].cardRank() == incrementCard)
-						broadway++;
-				}
-			} 
-			// readjusting counter to account for multiple cards (pairs, trips)
-			if (isTripsRiver(cards) || isTripsTurn(cards) || isTripsFlop(cards))
-			{
-				wheel = wheel - 2;
-				broadway = broadway - 2;
-			}
-			else if (isPairRiver(cards) || isPairTurn(cards) || isPairFlop(cards))
-			{
-				wheel = wheel - 1;
-				broadway = broadway - 1;
-			}
-			if (wheel >= 5 || broadway >= 5)
-				straight = true;
-		}
-		else
-		{
-			for (int incrementCard = cards[0].cardRank()+1; incrementCard < 6; incrementCard++)
-			{
-				for (int i = 1; i < 7; i++)
-				{
-					if (cards[i].cardRank() == incrementCard)
-						counter++;
-				}
-			}
-			// readjusting counter to account for multiple cards (pairs, trips)
-			if (isTripsRiver(cards) || isTripsTurn(cards) || isTripsFlop(cards))
-			{
-				counter = counter - 2;
-			}
-			else if (isPairRiver(cards) || isPairTurn(cards) || isPairRiver(cards))
-			{
-				counter = counter - 2;
-			}
-			if (counter >= 5)
-				straight = true;
-		}
-		return straight;
-	}
 	// check for royal flush on flop
 	public static boolean isRoyalFlushFlop(Card[] cards){
 		boolean royalFlush = false;
@@ -313,19 +905,81 @@ public class Card {
 	// check for royal flush on turn
 	public static boolean isRoyalFlushTurn(Card[] cards){
 		boolean royalFlush = false;
-		sortByCardTurn(cards);
-		if (cards[1].suitRank() == cards[5].suitRank() && cards[1].cardRank() == 8 && 
-				cards[2].cardRank() == 9 && cards[3].cardRank() == 10 && cards[4].cardRank() == 11 && cards[5].cardRank() == 12)
-			royalFlush = true;
+		int increment = 0;
+		sortBySuitTurn(cards);
+		if (cards[0].suitRank() == cards[4].suitRank())
+		{
+			for (int royalCards = 8; royalCards < 13; royalCards++)
+			{
+				for (int i = 0; i < 5; i++)
+				{
+					if (cards[i].cardRank() == royalCards)
+						increment++;
+				}
+			}
+			if (increment == 5)
+				royalFlush = true;
+		}
+		else if (cards[1].suitRank() == cards[5].suitRank())
+		{
+			for (int royalCards = 8; royalCards < 13; royalCards++)
+			{
+				for (int i = 1; i < 6; i++)
+				{
+					if (cards[i].cardRank() == royalCards)
+						increment++;
+				}
+			}
+			if (increment == 5)
+				royalFlush = true;
+		}
 		return royalFlush;
 	}
 	// check for royal flush on river
 	public static boolean isRoyalFlushRiver(Card[] cards){
 		boolean royalFlush = false;
-		sortByCardRiver(cards);
-		if (cards[2].suitRank() == cards[6].suitRank() &&  cards[2].cardRank() == 8 && 
-				cards[3].cardRank() == 9 && cards[4].cardRank() == 10 && cards[5].cardRank() == 11 && cards[6].cardRank() == 12)
-			royalFlush = true;
+		int increment = 0;
+		sortBySuitRiver(cards);
+		if (cards[0].suitRank() == cards[4].suitRank())
+		{
+			for (int royalCards = 8; royalCards < 13; royalCards++)
+			{
+				for (int i = 0; i < 5; i++)
+				{
+					if (cards[i].cardRank() == royalCards)
+						increment++;
+				}
+			}
+			if (increment == 5)
+				royalFlush = true;
+		}
+		else if (cards[1].suitRank() == cards[5].suitRank())
+		{
+			for (int royalCards = 8; royalCards < 13; royalCards++)
+			{
+				for (int i = 1; i < 6; i++)
+				{
+					if (cards[i].cardRank() == royalCards)
+						increment++;
+				}
+			}
+			if (increment == 5)
+				royalFlush = true;
+		}
+		else if (cards[2].suitRank() == cards[6].suitRank())
+		{
+			for (int royalCards = 8; royalCards < 13; royalCards++)
+			{
+				for (int i = 2; i < 7; i++)
+				{
+					if (cards[i].cardRank() == royalCards)
+						increment++;
+				}
+			}
+			if (increment == 5)
+				royalFlush = true;
+		}
+			
 		return royalFlush;
 	}
 	// check for straight flush on flop
@@ -334,79 +988,122 @@ public class Card {
 		sortByCardFlop(cards);
 		if (isRoyalFlushFlop(cards))
 			return straightFlush;
-		else if (cards[4].card.equalsIgnoreCase("Ace"))
+		else if (isStraightFlop(cards) && isFlushFlop(cards))
 		{
-			if (cards[0].suitRank() == cards[4].suitRank() && cards[0].card.equals("Two") && 
-					cards[1].card.equals("Three") && cards[2].card.equals("Four") && cards[3].card.equals("Five"))
-				straightFlush = true;
-		}
-		else
-		{
-			int incrementCard = cards[0].cardRank()+1;
-			for (int i = 1; i < 5; i++)
-			{
-				if (cards[i].cardRank() != incrementCard)
-					return straightFlush;
-				incrementCard++;
-			}
-			if (cards[0].suitRank() == cards[4].suitRank())
-				straightFlush = true;
-			else
-				return straightFlush;
+			return straightFlush;
 		}
 		return straightFlush;
 	}
 	// check for straight flush on turn
 	public static boolean isStraightFlushTurn(Card[] cards){
 		boolean straightFlush = false;
-		sortByCardFlop(cards);
+		sortBySuitAndCardTurn(cards);
 		if (isRoyalFlushTurn(cards))
 			return straightFlush;
-		else if (cards[5].card.equalsIgnoreCase("Ace"))
+		else if (cards[0].suitRank() == cards[4].suitRank())
 		{
-			if (cards[1].suitRank() == cards[5].suitRank() && cards[1].card.equals("Two") && 
-					cards[2].card.equals("Three") && cards[3].card.equals("Four") && cards[4].card.equals("Five"))
-				straightFlush = true;
-		}
-		else
-		{
-			int incrementCard = cards[1].cardRank()+1;
-			for (int i = 2; i < 6; i++)
+			if (cards[4].card.equalsIgnoreCase("Ace"))
 			{
-				if (cards[i].cardRank() != incrementCard)
-					return straightFlush;
-				incrementCard++;
+				if (cards[0].card.equals("Two") && cards[1].card.equals("Three") && cards[2].card.equals("Four") && cards[3].card.equals("Five"))
+					straightFlush = true;
 			}
-			if (cards[1].suitRank() == cards[5].suitRank())
+			else // check for any other straights (five sequential cards)
+			{
+				int incrementCard = cards[0].cardRank()+1;
+				for (int i = 1; i < 5; i++)
+				{
+					if (cards[i].cardRank() != incrementCard)
+						return straightFlush;
+					incrementCard++;
+				}
 				straightFlush = true;
-			else
-				return straightFlush;
+			}
 		}
+		else if (cards[1].suitRank() == cards[5].suitRank())
+		{
+			if (cards[5].card.equalsIgnoreCase("Ace"))
+			{
+				if (cards[1].card.equals("Two") && cards[2].card.equals("Three") && cards[3].card.equals("Four") && cards[4].card.equals("Five"))
+					straightFlush = true;
+			}
+			else // check for any other straights (five sequential cards)
+			{
+				int incrementCard = cards[1].cardRank()+1;
+				for (int i = 2; i < 5; i++)
+				{
+					if (cards[i].cardRank() != incrementCard)
+						return straightFlush;
+					incrementCard++;
+				}
+				straightFlush = true;
+			}
+		}
+		
 		return straightFlush;
-	}public static boolean isStraightFlushRiver(Card[] cards){
+	}
+	public static boolean isStraightFlushRiver(Card[] cards){
 		boolean straightFlush = false;
-		sortByCardFlop(cards);
+		sortBySuitAndCardRiver(cards);
+		for (Card s : cards)
+			System.out.println(s);
 		if (isRoyalFlushRiver(cards))
 			return straightFlush;
-		else if (cards[6].card.equalsIgnoreCase("Ace"))
+		else if (cards[0].suitRank() == cards[4].suitRank())
 		{
-			if (cards[2].suitRank() == cards[6].suitRank() && cards[2].card.equals("Two") && 
-					cards[3].card.equals("Three") && cards[4].card.equals("Four") && cards[5].card.equals("Five"))
-				straightFlush = true;
-		}
-		else
-		{
-			int incrementCard = cards[2].cardRank()+1;
-			for (int i = 3; i < 7; i++)
+			if (cards[4].card.equalsIgnoreCase("Ace"))
 			{
-				if (cards[i].cardRank() != incrementCard)
-					return straightFlush;
-				incrementCard++;
+				if (cards[0].card.equals("Two") && cards[1].card.equals("Three") && cards[2].card.equals("Four") && cards[3].card.equals("Five"))
+					straightFlush = true;
 			}
-			if (cards[2].suitRank() == cards[6].suitRank())
+			else // check for any other straights (five sequential cards)
+			{
+				int incrementCard = cards[0].cardRank()+1;
+				for (int i = 1; i < 5; i++)
+				{
+					if (cards[i].cardRank() != incrementCard)
+						return straightFlush;
+					incrementCard++;
+				}
 				straightFlush = true;
-			else
-				return straightFlush;
+			}
+		}
+		else if (cards[1].suitRank() == cards[5].suitRank())
+		{
+			if (cards[5].card.equalsIgnoreCase("Ace"))
+			{
+				if (cards[1].card.equals("Two") && cards[2].card.equals("Three") && cards[3].card.equals("Four") && cards[4].card.equals("Five"))
+					straightFlush = true;
+			}
+			else // check for any other straights (five sequential cards)
+			{
+				int incrementCard = cards[1].cardRank()+1;
+				for (int i = 2; i < 6; i++)
+				{
+					if (cards[i].cardRank() != incrementCard)
+						return straightFlush;
+					incrementCard++;
+				}
+				straightFlush = true;
+			}
+		}
+		else if (cards[2].suitRank() == cards[6].suitRank())
+		{
+			if (cards[6].card.equalsIgnoreCase("Ace"))
+			{
+				if (cards[2].card.equals("Two") && cards[3].card.equals("Three") && cards[4].card.equals("Four") && cards[5].card.equals("Five"))
+					straightFlush = true;
+			}
+			else // check for any other straights (five sequential cards)
+			{
+				int incrementCard = cards[2].cardRank()+1;
+				for (int i = 3; i < 7; i++)
+				{
+					if (cards[i].cardRank() != incrementCard)
+						return straightFlush;
+					incrementCard++;
+				}
+				straightFlush = true;
+			}
 		}
 		return straightFlush;
 	}
@@ -522,6 +1219,8 @@ public class Card {
 		sortByCardTurn(cards);
 		if (isFullHouseTurn(cards) || isQuadsTurn(cards) || isTripsTurn(cards) || isFullHouseFlop(cards) || isQuadsFlop(cards) || isTripsFlop(cards))
 			return twoPair;
+		else if (isTwoPairFlop(cards))
+			twoPair = true;
 		else if (cards[2].cardRank() == cards[3].cardRank() && cards[4].cardRank() == cards[5].cardRank())
 			twoPair = true;
 		else if (cards[1].cardRank() == cards[2].cardRank() && cards[4].cardRank() == cards[5].cardRank())
@@ -532,8 +1231,11 @@ public class Card {
 	public static boolean isTwoPairRiver(Card[] cards){
 		boolean twoPair = false;
 		sortByCardRiver(cards);
-		if (isFullHouseRiver(cards) || isQuadsRiver(cards) || isTripsRiver(cards) ||isFullHouseTurn(cards) || isQuadsTurn(cards) || isTripsTurn(cards) ||isFullHouseFlop(cards) || isQuadsFlop(cards) || isTripsFlop(cards))
+		if (isFullHouseRiver(cards) || isQuadsRiver(cards) || isTripsRiver(cards) ||isFullHouseTurn(cards) 
+				|| isQuadsTurn(cards) || isTripsTurn(cards) ||isFullHouseFlop(cards) || isQuadsFlop(cards) || isTripsFlop(cards))
 			return twoPair;
+		else if (isTwoPairTurn(cards))
+			twoPair = true;
 		else if (cards[3].cardRank() == cards[4].cardRank() && cards[5].cardRank() == cards[6].cardRank())
 			twoPair = true;
 		else if (cards[2].cardRank() == cards[3].cardRank() && cards[5].cardRank() == cards[6].cardRank())
@@ -579,18 +1281,18 @@ public class Card {
 	}
 	// return high card if no hand is made flop
 	public static String isHighCardFlop(Card[] cards){
-		String highCard = cards[4].card;
-		return highCard;
+		sortByCardFlop(cards);
+		return cards[4].card;
 	}
 	// return high card if no hand is made on turn
 	public static String isHighCardTurn(Card[] cards){
-		String highCard = cards[5].card;
-		return highCard;
+		sortByCardFlop(cards);
+		return cards[5].card;
 	}
 	// return high card if no hand is made on river
 	public static String isHighCardRiver(Card[] cards){
-		String highCard = cards[6].card;
-		return highCard;
+		sortByCardFlop(cards);
+		return cards[6].card;
 	}
 	// show what card this instance holds
 	public String toString(){
