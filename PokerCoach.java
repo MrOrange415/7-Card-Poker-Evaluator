@@ -1,9 +1,25 @@
-import java.util.Scanner;
+import java.io.File;
+import java.io.IOException;
+import java.util.*;
 
 public class PokerCoach {
-	public static void main(String[] args){
+	public static void main(String[] args) throws IOException{
 		String[] cards = new String[7];
 		String[] suits = new String[7];	
+		HashMap<String, String> cardRanks = new HashMap<String, String>();
+		cardRanks.put("Ace", "A");
+		cardRanks.put("Two", "2");
+		cardRanks.put("Three", "3");
+		cardRanks.put("Four", "4");
+		cardRanks.put("Five", "5");
+		cardRanks.put("Six", "6");
+		cardRanks.put("Seven","7");
+		cardRanks.put("Eight", "8");
+		cardRanks.put("Nine", "9");
+		cardRanks.put("Ten", "T");
+		cardRanks.put("Jack", "J");
+		cardRanks.put("Queen", "Q");
+		cardRanks.put("King", "K");
 		Card[] hand = new Card[7];
 		Scanner keyboard = new Scanner(System.in);
 		boolean cardCheck = false, seeFlop = false, seeTurn = false, seeRiver = false, seeAnotherHand = false;
@@ -41,6 +57,34 @@ public class PokerCoach {
 			cardCheck = false;
 		
 		} while (cardCheck == false);
+		File probabilityChart = new File("C:/Users/MontePC/Documents/PreFlop Odds.txt");
+		Scanner allProbabilities = new Scanner(probabilityChart);
+		String holeCardA = cardRanks.get(cards[0]) + cardRanks.get(cards[1]);
+		String holeCardB = cardRanks.get(cards[1]) + cardRanks.get(cards[0]);
+		if (!cards[0].equalsIgnoreCase(cards[1]))
+		{
+			if (suits[0].equalsIgnoreCase(suits[1]))
+			{
+				holeCardA += "s";
+				holeCardB += "s";
+			}
+			else
+			{
+				holeCardA += "o";
+				holeCardB += "o";
+			}
+		}
+		HashMap<String, String> oddsChart = new HashMap<String, String>();
+		while (allProbabilities.hasNext())
+		{
+			oddsChart.put(allProbabilities.next(), allProbabilities.nextLine());
+		}
+		System.out.println("Probability of winning if played to showdown");
+		System.out.println("    	2 plyrs	3 plyrs	4 plyrs	5 plyrs	6 plyrs	7 plyrs	8 plyrs	9 plyrs	10 plyrs");
+		if(oddsChart.containsKey(holeCardA))
+			System.out.println(oddsChart.get(holeCardA));
+		else
+			System.out.println(oddsChart.get(holeCardB));
 		// see if user wants to continue or fold
 		System.out.println("1.  See Flop.");
 		System.out.println("2.  Fold.");
@@ -57,7 +101,6 @@ public class PokerCoach {
 				System.exit(0);
 		}
 		} while (seeFlop == false);
-		
 		// take flop cards and check input
 		do
 		{
@@ -95,42 +138,124 @@ public class PokerCoach {
 
 		if (Card.isRoyalFlushFlop(hand))
 		{
-			System.out.println("You have a Royal Flush.");
+			System.out.println("You have a Royal Flush.  Cannot be beat.");
 		}
 		else if (Card.isStraightFlushFlop(hand))
 		{
 			System.out.println("You have a Straight Flush.");
+			System.out.println("1 out to a higher Straight Flush.");
+			System.out.println("Turn	River	If Played To Showdown");
+			System.out.println("2.13%	2.17%	4.26%");
 		}
 		else if (Card.isQuadsFlop(hand))
 		{
-			System.out.println("You have Four of a Kind.");
+			System.out.println("You have Four of a Kind.  No outs to draw to.");
 		}
 		else if (Card.isFullHouseFlop(hand))
 		{
 			System.out.println("You have a Full House.");
+			System.out.println("1 out to Quads.");
+			System.out.println("Turn	River	If Played To Showdown");
+			System.out.println("2.13%	2.17%	4.26%");
+			System.out.println("2 outs to other Full House.");
+			System.out.println("Turn	River	If Played To Showdown");
+			System.out.println("4.26%	4.35%	8.42%");
 		}
 		else if (Card.isFlushFlop(hand))
 		{
-			System.out.println("You have a Flush.");
+			System.out.println("You have a "+Card.isHighCardFlop(hand)+" high Flush.");
+			if (!hand[4].card.equals("Ace"))
+			{
+				int outs = 12 - hand[4].cardRank();
+				if (outs > 0)
+					{
+					System.out.println(outs+" outs to a higher Flush.");
+					switch (outs){
+					case 1:
+					{
+						System.out.println("Turn	River	If Played To Showdown");
+						System.out.println("2.13%	2.17%	4.26%");
+						break;
+					}
+					case 2:
+					{
+						System.out.println("Turn	River	If Played To Showdown");
+						System.out.println("4.26%	4.35%	8.42%");
+						break;
+					}
+					case 3:
+					{
+						System.out.println("Turn	River	If Played To Showdown");
+						System.out.println("6.38%	6.52%	12.49%");
+						break;
+					}
+					case 4:
+					{
+						System.out.println("Turn	River	If Played To Showdown");
+						System.out.println("8.51%	8.70%	16.47%");
+						break;
+					}
+					case 5:
+					{
+						System.out.println("Turn	River	If Played To Showdown");
+						System.out.println("10.64%	10.87%	20.35%");
+						break;
+					}
+					case 6:
+					{
+						System.out.println("Turn	River	If Played To Showdown");
+						System.out.println("12.77%	13.04%	24.14%");
+						break;
+					}
+					case 7:
+					{
+						System.out.println("Turn	River	If Played To Showdown");
+						System.out.println("14.89%	15.22%	27.84%");
+						break;
+					}
+				}
+			}
+			}
 		}
 		else if (Card.isStraightFlop(hand))
 		{
-			System.out.println("You have a Straight.");
+			System.out.println("You have a "+Card.isHighCardFlop(hand)+" high Straight.");
+			System.out.println("4 outs to a higher Straight.");
+			System.out.println("Turn	River	If Played To Showdown");
+			System.out.println("8.51%	8.70%	16.47%");
 		}
 		else if (Card.isTripsFlop(hand))
 		{
 			System.out.println("You have Three of a Kind.");
+			System.out.println("1 out to Quads.");
+			System.out.println("Turn	River	If Played To Showdown");
+			System.out.println("2.13%	2.17%	4.26%");
+			System.out.println("4 outs to a Full House on Turn. 6 outs from Turn to River.");
+			System.out.println("Turn	River	If Played To Showdown");
+			System.out.println("8.51%	13.04%	~21%");
 		}
 		else if (Card.isTwoPairFlop(hand))
 		{
 			System.out.println("You have Two Pair.");
+			System.out.println("4 outs to a Full House.");
+			System.out.println("Turn	River	If Played To Showdown");
+			System.out.println("8.51%	8.70%	16.47%");
 		}
 		else if (Card.isPairFlop(hand)){
 			System.out.println("You have One Pair.");
+			System.out.println("2 outs to Three of a Kind.");
+			System.out.println("Turn	River	If Played To Showdown");
+			System.out.println("4.26%	4.35%	8.42%");
+			System.out.println("9  outs to Two Pair.");
+			System.out.println("Turn	River	If Played To Showdown");
+			System.out.println("19.15%	19.57%	34.97%");
 		}
 		else 
 		{
 			System.out.println("You have "+Card.isHighCardFlop(hand)+" high.");
+			System.out.println("18 outs to One Pair.");
+			System.out.println("Turn	River	If Played To Showdown");
+			System.out.println("38.3%	39.13%	62.44%");
 		}
 		// check if user wants to see the turn
 		System.out.println("1.  See Turn.");
@@ -172,38 +297,89 @@ public class PokerCoach {
 	hand[5] = new Card(cards[5],suits[5]);
 	if (Card.isRoyalFlushTurn(hand))
 	{
-		System.out.println("You have a Royal Flush.");
+		System.out.println("You have a Royal Flush.  Cannot be beat.");
 	}
 	else if (Card.isStraightFlushTurn(hand))
 	{
 		System.out.println("You have a Straight Flush.");
+		System.out.println("1 out to a higher Straight Flush - 2.17%");
 	}
 	else if (Card.isQuadsTurn(hand) || Card.isQuadsFlop(hand))
 	{
-		System.out.println("You have Four of a Kind.");
+		System.out.println("You have Four of a Kind. No outs.");
 	}
 	else if (Card.isFullHouseTurn(hand) || Card.isFullHouseFlop(hand))
 	{
 		System.out.println("You have a Full House.");
+		System.out.println("1 out to Quads - 2.17%");
+		System.out.println("2 outs to other Full House - 4.35%");
 	}
 	else if (Card.isFlushTurn(hand) || Card.isFlushFlop(hand))
 	{
-		System.out.println("You have a Flush.");
+		System.out.println("You have a "+Card.isHighCardTurn(hand)+" high Flush.");
+		int outs = 12 - hand[5].cardRank();
+		if (outs > 0)
+		{
+			System.out.print(outs+" outs to a higher Flush - ");
+			switch (outs){
+			case 1:
+			{
+				System.out.println(" 2.17%.");
+				break;
+			}
+			case 2:
+			{
+				System.out.println(" 4.35%.");
+				break;
+			}
+			case 3:
+			{
+				System.out.println(" 6.52%.");
+				break;
+			}
+			case 4:
+			{
+				System.out.println(" 8.70%.");
+				break;
+			}
+			case 5:
+			{
+				System.out.println(" 10.87%.");
+				break;
+			}
+			case 6:
+			{
+				System.out.println(" 13.04%.");
+				break;
+			}
+			case 7:
+			{
+				System.out.println(" 15.22%.");
+				break;
+			}
+		}
+	}
 	}
 	else if (Card.isStraightTurn(hand))
 	{
-		System.out.println("You have a Straight.");
+		System.out.println("You have a "+Card.isHighCardTurn(hand)+" high Straight.");
+		System.out.println("4 outs to a higher Straight - 8.70%.");
 	}
 	else if (Card.isTripsTurn(hand) || Card.isTripsFlop(hand))
 	{
-		System.out.println("You have Three of a Kind.");
+		System.out.println("You have Three of a Kind.");		
+		System.out.println("1 out to Quads - 2.17%.");
+		System.out.println("6 outs to a Full House - 13.04%.");		
 	}
 	else if (Card.isTwoPairTurn(hand) || Card.isTwoPairFlop(hand))
 	{
 		System.out.println("You have Two Pair.");
+		System.out.println("4 outs to a Full House - 8.70%.");
 	}
 	else if (Card.isPairTurn(hand) || Card.isPairFlop(hand)){
 		System.out.println("You have One Pair.");
+		System.out.println("2 outs to Three of a Kind - 4.35%.");
+		System.out.println("12 outs to Two Pair - 26.09%");
 	}
 	else 
 	{
@@ -263,11 +439,11 @@ public class PokerCoach {
 	}
 	else if (Card.isFlushRiver(hand) || Card.isFlushTurn(hand) || Card.isFlushFlop(hand))
 	{
-		System.out.println("You have a Flush.");
+		System.out.println("You have a "+Card.isHighCardRiver(hand)+ "Flush.");
 	}
 	else if (Card.isStraightRiver(hand))
 	{
-		System.out.println("You have a Straight.");
+		System.out.println("You have a "+Card.isHighCardRiver(hand)+ " high Straight.");
 	}
 	else if (Card.isTripsRiver(hand) || Card.isTripsTurn(hand) || Card.isTripsFlop(hand))
 	{
@@ -284,8 +460,6 @@ public class PokerCoach {
 	{
 		System.out.println("You have "+Card.isHighCardRiver(hand)+" high.");
 	}
-	for (int i = 0; i < hand.length; i++)
-		System.out.println(hand[i]);
 	System.out.println("See another hand?");
 	System.out.println("1.  Yes.");
 	System.out.println("2.  No.");
