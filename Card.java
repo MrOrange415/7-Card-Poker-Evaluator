@@ -662,11 +662,37 @@ public class Card {
 			flush = true;
 		return flush;
 	}
+	// check for a flush draw on the flop
+	public static boolean isFlushDrawFlop(Card[] cards){
+		boolean flushDraw = false;
+		if (isFlushFlop(cards))
+			return flushDraw;
+		sortBySuitFlop(cards);
+		if (cards[0].suitRank() == cards[3].suitRank())
+			flushDraw = true;
+		else if (cards[1].suitRank() == cards[4].suitRank())
+			flushDraw = true;
+		return flushDraw;
+	}
 	// check to see if we have a flush on the turn
 	public static boolean isFlushTurn(Card[] cards){
 		boolean flush = false;
 		sortBySuitTurn(cards);
 		if (cards[0].suitRank() == cards[4].suitRank() || cards[1].suitRank() == cards[5].suitRank())
+			flush = true;
+		return flush;
+	}
+	// check for a flush draw on the turn
+	public static boolean isFlushDrawTurn(Card[] cards){
+		boolean flush = false;
+		if (isFlushTurn(cards))
+			return flush;
+		sortBySuitTurn(cards);
+		if (cards[0].suitRank() == cards[3].suitRank())
+			flush = true;
+		else if (cards[1].suitRank() == cards[4].suitRank())
+			flush = true;
+		else if (cards[2].suitRank() == cards[5].suitRank())
 			flush = true;
 		return flush;
 	}
@@ -702,6 +728,105 @@ public class Card {
 			straight = true;
 		}
 		return straight;
+	}
+	// check for open ended straight draw on flop
+	public static boolean isOpenStraightDrawFlop(Card[] cards){
+		boolean straightDraw = false;
+		if (isStraightFlop(cards))
+			return straightDraw;
+		sortByCardFlop(cards);
+		int counterA = 1, counterB = 1;
+		int incrementCard = cards[0].cardRank()+1;
+		for (int i = 1; i < 4; i++)
+		{
+			if (cards[i].cardRank() == incrementCard)
+				counterA++;
+			incrementCard++;
+		}
+		incrementCard = cards[1].cardRank()+1;
+		for (int i = 2; i < 5; i++)
+		{
+			if (cards[i].cardRank() == incrementCard)
+				counterB++;
+			incrementCard++;
+		}
+		if (isPairFlop(cards) && cards[0].cardRank() != cards[1].cardRank())
+		{
+			counterA -= 1;
+			counterB -= 1;
+		}
+		if (counterA == 4 || counterB == 4)
+			straightDraw = true;
+		return straightDraw;
+	}
+	public static boolean isDoubleGutStraightDrawFlop(Card[] cards){
+		boolean straightDraw = false;
+		if (isOpenStraightDrawFlop(cards))
+			return straightDraw;
+		sortByCardFlop(cards);
+		int counterA = 1, counterB = 1;
+		for (int incrementCard = cards[1].cardRank()+1; incrementCard < cards[1].cardRank()+5; incrementCard++)
+		{	
+			for (int i = 2; i < 5; i++)
+			{
+				if (cards[i].cardRank() == incrementCard)
+					counterB++;
+			}
+		}
+		for (int incrementCard = cards[0].cardRank()+1; incrementCard < cards[0].cardRank()+5; incrementCard++)
+		{	
+			for (int i = 1; i < 4; i++)
+			{
+				if (cards[i].cardRank() == incrementCard)
+					counterA++;
+			}
+		}
+		if (counterA == 4 && counterB == 4)
+			straightDraw = true;
+		return straightDraw;
+	}
+	public static boolean isGutStraightDrawFlop(Card[] cards){
+		boolean straightDraw = false;
+		if (isDoubleGutStraightDrawFlop(cards))
+			return straightDraw;
+		sortByCardFlop(cards);
+		int counterA = 2, counterB = 2, counterC = 2;
+		if (cards[4].cardRank() == 12 && cards[0].cardRank() == 0)
+		{
+			for (int incrementCard = 1; incrementCard < 4; incrementCard++)
+				{
+					for (int s = 1; s < 4; s++)
+					{
+						if (cards[s].cardRank() == incrementCard)
+							counterC++;
+					}
+				}
+		}
+		for (int incrementCard = cards[0].cardRank()+1; incrementCard < cards[0].cardRank()+5; incrementCard++)
+		{	
+			for (int i = 1; i < 4; i++)
+			{
+				if (cards[i].cardRank() == incrementCard)
+					counterA++;
+			}
+		}
+		for (int incrementCard = cards[1].cardRank()+1; incrementCard < cards[1].cardRank()+5; incrementCard++)
+		{	
+			for (int i = 2; i < 5; i++)
+			{
+				if (cards[i].cardRank() == incrementCard)
+					counterB++;
+			}
+		}
+		if (isPairFlop(cards) && cards[0].cardRank() != cards[1].cardRank())
+		{
+			counterA -= 1;
+			counterB -= 1;
+			counterC -= 1;
+		}
+		if (counterA == 4 || counterB == 4 || counterC == 4)
+			straightDraw = true;
+		return straightDraw;
 	}
 	// check for straight on the turn.  using a counter to count number of instances of cards within a straight range (five or more sequential cards)
 	// and a check for pairs or more to account for duplicates
@@ -785,6 +910,204 @@ public class Card {
 					straight = true;
 			}
 			return straight;
+		}
+		// check for open ended straight draw on the turn
+		public static boolean isOpenStraightDrawTurn(Card[] cards){
+			boolean straightDraw = false;
+			if (isStraightTurn(cards))
+				return straightDraw;
+			sortByCardTurn(cards);
+			int counterA = 1, counterB = 1, counterC = 1;
+			int incrementCard = cards[0].cardRank()+1;
+			for (int i = 1; i < 4; i++)
+			{
+				if (cards[i].cardRank() == incrementCard)
+					counterA++;
+				incrementCard++;
+			}
+			incrementCard = cards[1].cardRank()+1;
+			for (int i = 2; i < 5; i++)
+			{
+				if (cards[i].cardRank() == incrementCard)
+					counterB++;
+				incrementCard++;
+			}
+			incrementCard = cards[2].cardRank()+1;
+			for (int i = 3; i < 6; i++)
+			{
+				if (cards[i].cardRank() == incrementCard)
+					counterC++;
+				incrementCard++;
+			}
+			if (isTwoPairTurn(cards) && cards[0].cardRank() == cards[1].cardRank())
+			{
+				counterA -= 1;
+				counterB -= 1;
+				counterC -= 1;
+			}
+			else if (isTwoPairTurn(cards))
+			{
+				counterA -= 2;
+				counterB -= 2;
+				counterC -= 2;
+			}
+			else if (isPairTurn(cards) && cards[0].cardRank() != cards[1].cardRank())
+			{
+				counterA -= 1;
+				counterB -= 1;
+				counterC -= 1;
+			}
+			if (counterA == 4 || counterB == 4 || counterC == 4)
+				straightDraw = true;
+			return straightDraw;
+		}
+		public static boolean isDoubleGutStraightDrawTurn(Card[] cards){
+			boolean straightDraw = false;
+			if (isOpenStraightDrawTurn(cards))
+				return straightDraw;
+			sortByCardTurn(cards);
+			int counterA = 1, counterB = 1, counterC = 1;
+			for (int incrementCard = cards[2].cardRank()+1; incrementCard < cards[2].cardRank()+5; incrementCard++)
+			{	
+				for (int i = 3; i < 6; i++)
+				{
+					if (cards[i].cardRank() == incrementCard)
+						counterC++;
+				}
+			}
+			for (int incrementCard = cards[1].cardRank()+1; incrementCard < cards[1].cardRank()+5; incrementCard++)
+			{	
+				for (int i = 2; i < 5; i++)
+				{
+					if (cards[i].cardRank() == incrementCard)
+						counterB++;
+				}
+			}
+			for (int incrementCard = cards[0].cardRank()+1; incrementCard < cards[0].cardRank()+5; incrementCard++)
+			{	
+				for (int i = 1; i < 4; i++)
+				{
+					if (cards[i].cardRank() == incrementCard)
+						counterA++;
+				}
+			}
+			if (isTwoPairTurn(cards) && cards[0].cardRank() == cards[1].cardRank())
+			{
+				counterA -= 1;
+				counterB -= 1;
+				counterC -= 1;
+			}
+			else if (isTwoPairTurn(cards))
+			{
+				counterA -= 2;
+				counterB -= 2;
+				counterC -= 2;
+			}
+			else if (isPairTurn(cards) && cards[0].cardRank() != cards[1].cardRank())
+			{
+				counterA -= 1;
+				counterB -= 1;
+				counterC -= 1;
+			}
+			if (counterA == 4 && counterB == 4 || counterB == 4 && counterC == 4)
+				straightDraw = true;
+			return straightDraw;
+		}
+		public static boolean isGutStraightDrawTurn(Card[] cards){
+			boolean straightDraw = false;
+			if (isDoubleGutStraightDrawTurn(cards))
+				return straightDraw;
+			sortByCardTurn(cards);
+			int counterA = 1, counterB = 1, counterC = 1, counterD = 2;
+			if (cards[4].cardRank() == 12 && cards[0].cardRank() == 0 || cards[5].cardRank() == 12 && cards[0].cardRank() == 0 || cards[5].cardRank() == 12 && cards[1].cardRank() == 0)
+			{
+				if (cards[4].cardRank == 12 && cards[0].cardRank == 0)
+				{
+					for (int incrementCard = 1; incrementCard < 4; incrementCard++)
+					{
+						for (int s = 1; s < 4; s++)
+						{
+							if (cards[s].cardRank() == incrementCard)
+								counterD++;
+						}
+					}
+				}
+				else if (cards[5].cardRank == 12 && cards[0].cardRank == 0)
+				{
+					for (int incrementCard = 1; incrementCard < 4; incrementCard++)
+					{
+						for (int s = 1; s < 5; s++)
+						{
+							if (cards[s].cardRank() == incrementCard)
+								counterD++;
+						}
+					}
+				}
+				else if (cards[5].cardRank == 12 && cards[1].cardRank == 0)
+				{
+					for (int incrementCard = 1; incrementCard < 4; incrementCard++)
+					{
+						for (int s = 1; s < 5; s++)
+						{
+							if (cards[s].cardRank() == incrementCard)
+								counterD++;
+						}
+					}
+				}
+				
+			}
+			for (int incrementCard = cards[2].cardRank()+1; incrementCard < cards[2].cardRank()+5; incrementCard++)
+			{	
+				for (int i = 3; i < 6; i++)
+				{
+					if (cards[i].cardRank() == incrementCard)
+						counterC++;
+				}
+			}
+			for (int incrementCard = cards[1].cardRank()+1; incrementCard < cards[1].cardRank()+5; incrementCard++)
+			{	
+				for (int i = 2; i < 5; i++)
+				{
+					if (cards[i].cardRank() == incrementCard)
+						counterB++;
+				}
+			}
+			for (int incrementCard = cards[0].cardRank()+1; incrementCard < cards[0].cardRank()+5; incrementCard++)
+			{	
+				for (int i = 1; i < 4; i++)
+				{
+					if (cards[i].cardRank() == incrementCard)
+						counterA++;
+				}
+			}
+			if (isTwoPairTurn(cards) && cards[0].cardRank() == cards[1].cardRank())
+			{
+				counterA -= 1;
+				counterB -= 1;
+				counterC -= 1;
+				counterD -= 1;
+			}
+			else if (isTwoPairTurn(cards))
+			{
+				counterA -= 2;
+				counterB -= 2;
+				counterC -= 2;
+				counterD -= 2;
+			}
+			else if (isPairTurn(cards))
+			{
+				if (!(cards[0].cardRank() == cards[1].cardRank() && cards[1].cardRank()+1 != cards[2].cardRank()) &&
+						!(cards[4].cardRank() == cards[5].cardRank() && cards[4].cardRank()-1 != cards[3].cardRank()))
+				{
+					counterA -= 1;
+					counterB -= 1;
+					counterC -= 1;
+					counterD -= 1;
+				}
+			}
+			if (counterB == 4 || counterA == 4 || counterC == 4 || counterD == 4)
+				straightDraw = true;
+			return straightDraw;
 		}
 		// check for straight on the river.  using a counter to count number of instances of cards within a straight range (five or more sequential cards)
 		// and a check for pairs or more to account for duplicates
@@ -902,6 +1225,40 @@ public class Card {
 			royalFlush = true;
 		return royalFlush;
 	}
+	// check for a royal flush draw
+	public static boolean isRoyalFlushDrawFlop(Card[] cards){
+		boolean royalDraw = false;
+		sortBySuitFlop(cards);
+		int counterA = 0;
+		if (isRoyalFlushFlop(cards) || isStraightFlushFlop(cards) || isStraightFlop(cards) || isFlushFlop(cards))
+			return royalDraw;
+		if (cards[0].suitRank() == cards[3].suitRank())
+		{
+			for (int increment = 8; increment < 13; increment++)
+			{
+				for (int s = 0; s < 4; s++)
+				{
+					if (cards[s].cardRank() == increment)
+						counterA++;
+				}
+			}
+		}
+		else if (cards[1].suitRank() == cards[4].suitRank())
+		{
+			for (int increment = 8; increment < 13; increment++)
+			{
+				for (int s = 1; s < 5; s++)
+				{
+					if (cards[s].cardRank() == increment)
+						counterA++;
+				}
+			}
+		}
+		
+		if (counterA ==4)
+			royalDraw = true;
+		return royalDraw;
+	}
 	// check for royal flush on turn
 	public static boolean isRoyalFlushTurn(Card[] cards){
 		boolean royalFlush = false;
@@ -934,6 +1291,50 @@ public class Card {
 				royalFlush = true;
 		}
 		return royalFlush;
+	}
+	public static boolean isRoyalFlushDrawTurn(Card[] cards){
+		boolean royalDraw = false;
+		sortBySuitFlop(cards);
+		int counterA = 0;
+		if (isRoyalFlushTurn(cards) || isStraightFlushTurn(cards) || isStraightTurn(cards) || isFlushTurn(cards))
+			return royalDraw;
+		if (cards[0].suitRank() == cards[3].suitRank())
+		{
+			for (int increment = 8; increment < 13; increment++)
+			{
+				for (int s = 0; s < 4; s++)
+				{
+					if (cards[s].cardRank() == increment)
+						counterA++;
+				}
+			}
+		}
+		else if (cards[1].suitRank() == cards[4].suitRank())
+		{
+			for (int increment = 8; increment < 13; increment++)
+			{
+				for (int s = 1; s < 5; s++)
+				{
+					if (cards[s].cardRank() == increment)
+						counterA++;
+				}
+			}
+		}
+		else if (cards[2].suitRank() == cards[5].suitRank())
+		{
+			for (int increment = 8; increment < 13; increment++)
+			{
+				for (int s = 2; s < 6; s++)
+				{
+					if (cards[s].cardRank() == increment)
+						counterA++;
+				}
+			}
+		}
+		
+		if (counterA ==4)
+			royalDraw = true;
+		return royalDraw;
 	}
 	// check for royal flush on river
 	public static boolean isRoyalFlushRiver(Card[] cards){
